@@ -29,7 +29,7 @@ class Sql2oFilmDaoTest {
 
     @Test
     void addingFilmSetsId() throws DaoException {
-        Film film = newTestCourse();
+        Film film = newTestFilm();
         int originalFilmId = film.getId();
 
         dao.add(film);
@@ -38,8 +38,8 @@ class Sql2oFilmDaoTest {
     }
 
     @Test
-    void addedCoursesAreReturnedFromFindAll() throws DaoException {
-        Film film = newTestCourse();
+    void addedFilmsAreReturnedFromFindAll() throws DaoException {
+        Film film = newTestFilm();
 
         dao.add(film);
 
@@ -52,8 +52,8 @@ class Sql2oFilmDaoTest {
     }
 
     @Test
-    void existingCoursesCanBeFound() throws DaoException {
-        Film film = newTestCourse();
+    void existingFilmsCanBeFound() throws DaoException {
+        Film film = newTestFilm();
         dao.add(film);
 
         Film foundFilm = dao.findById(film.getId());
@@ -61,7 +61,7 @@ class Sql2oFilmDaoTest {
         assertEquals(film, foundFilm);
     }
 
-    private static Film newTestCourse() {
+    private static Film newTestFilm() {
         return new Film("The Matrix", 1999, "https://www.imdb.com/title/tt0133093/");
     }
 }
