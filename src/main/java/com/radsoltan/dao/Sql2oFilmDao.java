@@ -24,7 +24,8 @@ public class Sql2oFilmDao implements FilmDao{
     public void add(Film film) throws DaoException {
         String sql = "INSERT INTO films(title, release_year, imdb_url) VALUES (:title, :releaseYear, :imdbUrl)";
         try (Connection connection = sql2o.open()) {
-            int id = (int) connection.createQuery(sql)
+            int id = (int) connection
+                    .createQuery(sql)
                     .addParameter("title", film.getTitle())
                     .addParameter("releaseYear", film.getReleaseYear())
                     .addParameter("imdbUrl", film.getImdbUrl())
@@ -40,9 +41,20 @@ public class Sql2oFilmDao implements FilmDao{
 
     @Override
     public List<Film> findAll() {
-        Connection connection = sql2o.open();
-
-        return connection.createQuery("SELECT * FROM films")
+        try (Connection connection = sql2o.open()) {
+            return connection
+                    .createQuery("SELECT * FROM films")
                     .executeAndFetch(Film.class);
+        }
+    }
+
+    @Override
+    public Film findById(int id) {
+        try (Connection connection = sql2o.open()) {
+            return connection
+                    .createQuery("SELECT * FROM films WHERE id = :id")
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Film.class);
+        }
     }
 }
