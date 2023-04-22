@@ -10,7 +10,21 @@ import static spark.Spark.*;
 
 public class Api {
     public static void main(String[] args) {
-        Sql2o sql2o = new Sql2o("jdbc:h2:~/reviews.db;INIT=RUNSCRIPT from 'classpath:db/init.sql'", "", "");
+        String dataSource = "jdbc:h2:~/reviews.db";
+        if (args.length > 0) {
+            if (args.length != 2) {
+                System.out.println("java API <port> <datasource>");
+                System.exit(0);
+            }
+            port(Integer.parseInt(args[0]));
+            dataSource = args[1];
+        }
+
+        Sql2o sql2o = new Sql2o(
+                String.format("%s;INIT=RUNSCRIPT from 'classpath:db/init.sql'", dataSource),
+                "",
+                ""
+        );
         FilmDao filmDao = new Sql2oFilmDao(sql2o);
         Gson gson = new Gson();
 
@@ -22,14 +36,12 @@ public class Api {
         }, gson::toJson);
 
         get("/films", "application/json", (request, response) -> filmDao.findAll(), gson::toJson);
-        
+
         get("/films/:id", "application/json", (request, response) -> {
             int id = Integer.parseInt(request.params("id"));
 
             // TODO: 16/04/2023 What if this is not found
-            Film film = filmDao.findById(id);
-            
-            return film;
+            return filmDao.findById(id);
         }, gson::toJson);
 
         after((request, response) -> response.type("application/json"));
