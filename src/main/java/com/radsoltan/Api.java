@@ -3,8 +3,12 @@ package com.radsoltan;
 import com.google.gson.Gson;
 import com.radsoltan.dao.FilmDao;
 import com.radsoltan.dao.Sql2oFilmDao;
+import com.radsoltan.exc.ApiError;
 import com.radsoltan.model.Film;
 import org.sql2o.Sql2o;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -39,10 +43,22 @@ public class Api {
 
         get("/films/:id", "application/json", (request, response) -> {
             int id = Integer.parseInt(request.params("id"));
-
-            // TODO: 16/04/2023 What if this is not found
-            return filmDao.findById(id);
+            Film film = filmDao.findById(id);
+            if (film == null) {
+                throw new ApiError(404, "Could not find film with id " + id);
+            }
+            return film;
         }, gson::toJson);
+
+        exception(ApiError.class, ((exception, request, response) -> {
+            ApiError error = (ApiError) exception;
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("status", error.getStatus());
+            jsonMap.put("errorMessage", error.getMessage());
+            response.type("application/json");
+            response.status(error.getStatus());
+            response.body(gson.toJson(jsonMap));
+        }));
 
         after((request, response) -> response.type("application/json"));
     }
