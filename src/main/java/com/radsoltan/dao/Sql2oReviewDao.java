@@ -1,7 +1,6 @@
 package com.radsoltan.dao;
 
 import com.radsoltan.exc.DaoException;
-import com.radsoltan.model.Film;
 import com.radsoltan.model.Review;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;

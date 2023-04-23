@@ -4,7 +4,6 @@ import com.radsoltan.exc.DaoException;
 import com.radsoltan.model.Film;
 import com.radsoltan.model.Review;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sql2o.Connection;
