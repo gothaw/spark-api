@@ -12,17 +12,18 @@ import java.util.Map;
 
 public class Sql2oFilmDao implements FilmDao{
     private final Sql2o sql2o;
+    private final Map<String, String> columnMaps;
 
     public Sql2oFilmDao(Sql2o sql2o) {
         this.sql2o = sql2o;
-        Map<String, String> columnMaps = new HashMap<>(Map.of("RELEASE_YEAR", "releaseYear", "IMDB_URL", "imdbUrl"));
-
-        sql2o.setDefaultColumnMappings(columnMaps);
+        columnMaps = new HashMap<>(Map.of("RELEASE_YEAR", "releaseYear", "IMDB_URL", "imdbUrl"));
     }
 
     @Override
     public void add(Film film) throws DaoException {
         String sql = "INSERT INTO films(title, release_year, imdb_url) VALUES (:title, :releaseYear, :imdbUrl)";
+        sql2o.setDefaultColumnMappings(columnMaps);
+
         try (Connection connection = sql2o.open()) {
             int id = (int) connection
                     .createQuery(sql)
@@ -41,6 +42,8 @@ public class Sql2oFilmDao implements FilmDao{
 
     @Override
     public List<Film> findAll() {
+        sql2o.setDefaultColumnMappings(columnMaps);
+
         try (Connection connection = sql2o.open()) {
             return connection
                     .createQuery("SELECT * FROM films")
@@ -50,6 +53,8 @@ public class Sql2oFilmDao implements FilmDao{
 
     @Override
     public Film findById(int id) {
+        sql2o.setDefaultColumnMappings(columnMaps);
+
         try (Connection connection = sql2o.open()) {
             return connection
                     .createQuery("SELECT * FROM films WHERE id = :id")

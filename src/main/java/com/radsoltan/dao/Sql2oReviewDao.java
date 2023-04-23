@@ -13,17 +13,18 @@ import java.util.Map;
 
 public class Sql2oReviewDao implements ReviewDao {
     private final Sql2o sql2o;
+    private final Map<String, String> columnMaps;
 
     public Sql2oReviewDao(Sql2o sql2o) {
         this.sql2o = sql2o;
 
-        Map<String, String> columnMaps = new HashMap<>(Map.of("FILM_ID", "filmId", "RATING", "rating", "COMMENT", "comment"));
-        sql2o.setDefaultColumnMappings(columnMaps);
+        columnMaps = new HashMap<>(Map.of("FILM_ID", "filmId", "RATING", "rating", "COMMENT", "comment"));
     }
 
     @Override
     public void add(Review review) throws DaoException {
         String sql = "INSERT INTO reviews(film_id, rating, comment) VALUES (:filmId, :rating, :comment)";
+        sql2o.setDefaultColumnMappings(columnMaps);
 
         try (Connection connection = sql2o.open()) {
             int id = (int) connection
@@ -43,6 +44,8 @@ public class Sql2oReviewDao implements ReviewDao {
 
     @Override
     public List<Review> findAll() {
+        sql2o.setDefaultColumnMappings(columnMaps);
+
         try (Connection connection = sql2o.open()) {
             return connection
                     .createQuery("SELECT * FROM reviews")
@@ -52,6 +55,8 @@ public class Sql2oReviewDao implements ReviewDao {
 
     @Override
     public List<Review> findByFilmId(int filmId) {
+        sql2o.setDefaultColumnMappings(columnMaps);
+
         try (Connection connection = sql2o.open()) {
             return connection
                     .createQuery("SELECT * FROM reviews WHERE film_id = :filmId")
