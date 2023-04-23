@@ -15,7 +15,7 @@ public class Sql2oFilmDao implements FilmDao{
 
     public Sql2oFilmDao(Sql2o sql2o) {
         this.sql2o = sql2o;
-        Map<String, String> columnMaps = new HashMap<String, String>(Map.of("RELEASE_YEAR", "releaseYear", "IMDB_URL", "imdbUrl"));
+        Map<String, String> columnMaps = new HashMap<>(Map.of("RELEASE_YEAR", "releaseYear", "IMDB_URL", "imdbUrl"));
 
         sql2o.setDefaultColumnMappings(columnMaps);
     }
