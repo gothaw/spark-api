@@ -29,7 +29,6 @@ class Sql2oReviewDaoTest {
         reviewDao = new Sql2oReviewDao(sql2o);
         film = newTestFilm();
         filmDao.add(film);
-        // Keep connection open through entire test, so it's not wiped out
     }
 
     @AfterEach
